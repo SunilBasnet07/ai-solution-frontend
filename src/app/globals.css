@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #2563eb, #7c3aed);
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Line clamp utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@font-face{
+  font-family:"Nunito";
+  src:url("/fonts/Nunito-Regular.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Nunito-Bold";
+  src:url("/fonts/Nunito-Bold.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Nunito-SemiBold";
+  src:url("/fonts/Nunito-SemiBold.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Nunito-ExtraBold";
+  src:url("/fonts/Nunito-ExtraBold.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Poppins";
+  src:url("/fonts/Poppins-Regular.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Poppins-SemiBold";
+  src:url("/fonts/Poppins-SemiBold.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Poppins-Bold";
+  src:url("/fonts/Poppins-Bold.ttf") format("truetype");
+}
+@font-face{
+  font-family:"Poppins-ExtraBold";
+  src:url("/fonts/Poppins-ExtraBold.ttf") format("truetype");
+}
