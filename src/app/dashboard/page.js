@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import AddBlogPostModal from '@/components/AddBlogPostModal';
 import EditBlogPostModal from '@/components/EditBlogPostModal';
+import PasswordChangeModal from '@/components/PasswordChangeModal';
 import {
   Users,
   TrendingUp,
@@ -324,11 +325,11 @@ console.log(contactStatus)
               <div>
                 <p className="text-slate-600 text-sm font-medium mb-1">{stat.title}</p>
                 <p className="text-3xl font-bold text-slate-900 mb-2">{stat.value}</p>
+                </div>
               </div>
-            </div>
-          </div>
+              </div>
         ))}
-      </div>
+            </div>
 
       {/* Quick Actions */}
       <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
@@ -341,7 +342,7 @@ console.log(contactStatus)
             <div className="flex flex-col items-center space-y-2">
               <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FileText className="w-5 h-5 text-white" />
-              </div>
+          </div>
               <span className="text-sm font-medium text-blue-700">New Blog Post</span>
             </div>
           </button>
@@ -367,12 +368,15 @@ console.log(contactStatus)
             </div>
           </button>
           
-          <button className="group p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl hover:from-orange-100 hover:to-orange-200 transition-all duration-300 hover:scale-105">
+          <button 
+            onClick={() => setIsPasswordChangeOpen(true)}
+            className="group p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl hover:from-orange-100 hover:to-orange-200 transition-all duration-300 hover:scale-105"
+          >
             <div className="flex flex-col items-center space-y-2">
               <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Settings className="w-5 h-5 text-white" />
               </div>
-              <span className="text-sm font-medium text-orange-700">Settings</span>
+              <span className="text-sm font-medium text-orange-700">Change Password</span>
             </div>
           </button>
         </div>
@@ -680,7 +684,23 @@ console.log(contactStatus)
   const [isContactDeleteOpen, setIsContactDeleteOpen] = useState(false);
   const [contactDeleteId, setContactDeleteId] = useState(null);
   const [deletingContact, setDeletingContact] = useState(false);
+  const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   // const dispatch = useDispatch();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showUserDropdown && !event.target.closest('.user-dropdown')) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserDropdown]);
   const handleAddPostSubmit = (data) => {
     // Stub: replace with API call to create post
     // console.log('New post data:', data);
@@ -924,9 +944,9 @@ console.log(contactStatus)
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                   <BarChart3 className="w-6 h-6 text-white" />
                 </div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Dashboard
-                </h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Dashboard
+              </h1>
               </div>
             </div>
 
@@ -945,14 +965,63 @@ console.log(contactStatus)
                 <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
               </button>
 
-              <div className="flex items-center space-x-3 pl-3 border-l border-slate-200">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center hover:scale-105 transition-transform duration-300">
-                  <User className="w-5 h-5 text-white" />
+              <div className="relative pl-3 border-l border-slate-200 user-dropdown">
+                <button
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="flex items-center space-x-3 hover:bg-slate-50 rounded-xl p-2 transition-colors"
+                >
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center hover:scale-105 transition-transform duration-300">
+                    <User className="w-5 h-5 text-white" />
                 </div>
-                <div className="hidden md:block">
-                  <span className="text-sm font-semibold text-slate-900">Admin User</span>
-                  <p className="text-xs text-slate-500">Administrator</p>
-                </div>
+                  <div className="hidden md:block text-left">
+                    <span className="text-sm font-semibold text-slate-900">Admin User</span>
+                    <p className="text-xs text-slate-500">Administrator</p>
+              </div>
+                </button>
+
+                {/* User Dropdown Menu */}
+                {showUserDropdown && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-slate-100">
+                      <p className="text-sm font-semibold text-slate-900">Admin User</p>
+                      <p className="text-xs text-slate-500">admin@example.com</p>
+                    </div>
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setIsPasswordChangeOpen(true);
+                          setShowUserDropdown(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <Settings className="w-4 h-4 mr-3 text-slate-500" />
+                        Change Password
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Navigate to settings page
+                          setActiveTab('settings');
+                          setShowUserDropdown(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <User className="w-4 h-4 mr-3 text-slate-500" />
+                        Profile Settings
+                      </button>
+                      <div className="border-t border-slate-100 my-1"></div>
+                      <button
+                        onClick={() => {
+                          // Handle logout
+                          setShowUserDropdown(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <X className="w-4 h-4 mr-3" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1007,6 +1076,12 @@ console.log(contactStatus)
         {activeTab === 'blog' && renderBlogManagement()}
         {activeTab === 'contacts' && renderContactManagement()}
       </main>
+
+      {/* Password Change Modal */}
+      <PasswordChangeModal
+        isOpen={isPasswordChangeOpen}
+        onClose={() => setIsPasswordChangeOpen(false)}
+      />
     </div>
   );
 };
