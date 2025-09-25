@@ -19,4 +19,5 @@ const editBlog = async(id,data)=>{
     return response.data
 }
 
+
 export {getAllBlogs,addBlogPost,deleteBlog,editBlog}

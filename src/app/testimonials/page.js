@@ -13,6 +13,9 @@ import {
   Globe,
   Zap
 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { submitReview, resetSubmitState } from '@/redux/review/reviewSlice';
 
 const Testimonials = () => {
   const testimonials = [
@@ -136,6 +139,37 @@ const Testimonials = () => {
     { number: "24/7", label: "Support Available", icon: Award }
   ];
 
+  const dispatch = useDispatch();
+  const { submitStatus, submitError } = useSelector((state) => state.review);
+
+  const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
+  const [content, setContent] = useState('');
+  const [rating, setRating] = useState(5);
+  const [touched, setTouched] = useState(false);
+
+  useEffect(() => {
+    if (submitStatus === 'succeeded') {
+      setName('');
+      setCompany('');
+      setContent('');
+      setRating(5);
+      const timer = setTimeout(() => {
+        dispatch(resetSubmitState());
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitStatus, dispatch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setTouched(true);
+    if (!name.trim() || !content.trim() || rating < 1) return;
+    dispatch(
+      submitReview({ name: name.trim(), company: company.trim(), content: content.trim(), rating })
+    );
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -258,6 +292,98 @@ const Testimonials = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Submit Review Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-2xl mx-auto bg-gray-50 p-8 rounded-2xl shadow"
+          >
+            <h3 className="text-2xl font-Poppins-ExtraBold text-gray-900 mb-6 text-center">
+              Share Your Review
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-Poppins-SemiBold text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your name"
+                />
+                {touched && !name.trim() && (
+                  <p className="text-sm text-red-600 mt-1">Name is required.</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-Poppins-SemiBold text-gray-700 mb-1">Company (optional)</label>
+                <input
+                  type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your company"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-Poppins-SemiBold text-gray-700 mb-2">Rating</label>
+                <div className="flex items-center gap-2">
+                  {[1,2,3,4,5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      className="p-1"
+                      aria-label={`Rate ${star} star${star>1?'s':''}`}
+                    >
+                      <Star className={`w-6 h-6 ${rating >= star ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-Poppins-SemiBold text-gray-700 mb-1">Review</label>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows={4}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Tell us about your experience..."
+                />
+                {touched && !content.trim() && (
+                  <p className="text-sm text-red-600 mt-1">Review content is required.</p>
+                )}
+              </div>
+
+              {submitError && submitStatus === 'failed' && (
+                <div className="text-sm text-red-600">{submitError}</div>
+              )}
+              {submitStatus === 'succeeded' && (
+                <div className="text-sm text-green-600">Thank you! Your review has been submitted.</div>
+              )}
+
+              <div className="flex justify-center">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={submitStatus === 'loading'}
+                  className={`px-6 py-3 rounded-lg font-Poppins-SemiBold text-white transition-all duration-300 ${submitStatus === 'loading' ? 'bg-gray-400' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg'}`}
+                >
+                  {submitStatus === 'loading' ? 'Submitting...' : 'Submit Review'}
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
         </div>
       </section>
 

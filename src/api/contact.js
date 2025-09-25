@@ -3,14 +3,16 @@ import axios from "axios";
 import token from "./token";
 
 const createContact =async(data)=>{
-    console.log(data);
-    console.log(token);
-    const response = await axios.post(`${baseApiUrl}/api/contact`,data,{
-        headers:{
-            Authorization: `Bearer ${token}`
-        }
-    })
+    const response = await axios.post(`${baseApiUrl}/api/contact`,data)
+    
     return response.data;
 }
-
-export {createContact}
+const getAllContacts =async()=>{
+    const response = await axios.get(`${baseApiUrl}/api/contact`)
+    return response.data;
+}
+const deleteContact =async(id)=>{
+    const response = await axios.delete(`${baseApiUrl}/api/contact/${id}`)
+    return response.data;
+}
+export {createContact,getAllContacts,deleteContact}
